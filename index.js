@@ -89,6 +89,25 @@ app.get("/getPages", (req, res) => {
     .catch((error) => console.log("error", error));
 });
 
+app.get("/getSendingProfiles", (req, res) => {
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+  );
+
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  fetch("https://127.0.0.1:3333/api/smtp/", requestOptions)
+    .then((response) => response.text())
+    .then((result) => res.json(JSON.parse(result)))
+    .catch((error) => console.log("error", error));
+});
+
 // Start the server
 const PORT = 3000;
 app.listen(PORT, () => {
