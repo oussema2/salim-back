@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const api_key = 'e55ce3c03356ae8fa25465c07dbce7c4826b0077e95d701701e8166dc192b0b8'
 // Create an instance of the Express application
 const app = express();
 
@@ -35,7 +36,7 @@ app.get("/getTemplates", (req, res) => {
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
-    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+    `Bearer ${api_key}`
   );
 
   var requestOptions = {
@@ -54,7 +55,7 @@ app.get("/getGroups", (req, res) => {
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
-    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+    `Bearer ${api_key}`
   );
 
   var requestOptions = {
@@ -73,7 +74,7 @@ app.get("/getPages", (req, res) => {
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
-    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+    `Bearer ${api_key}`
   );
 
   var requestOptions = {
