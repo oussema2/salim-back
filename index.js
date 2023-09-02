@@ -93,7 +93,7 @@ app.get("/getSendingProfiles", (req, res) => {
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
-    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+    `Bearer ${api_key}`
   );
 
   var requestOptions = {
