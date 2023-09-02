@@ -107,6 +107,45 @@ app.get("/getSendingProfiles", (req, res) => {
     .then((result) => res.json(JSON.parse(result)))
     .catch((error) => console.log("error", error));
 });
+app.post("/addCampagne", (req, res) => {
+  var myHeaders = new Headers();
+  console.log(req.body);
+  myHeaders.append(
+    "Authorization",
+    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+  );
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(req.body),
+    redirect: "follow",
+  };
+
+  fetch("https://127.0.0.1:3333/api/campaigns/", requestOptions)
+    .then((response) => response.text())
+    .then((result) => res.send({ ...JSON.parse(result), code: 200 }))
+    .catch((error) => console.log("error", error));
+});
+
+app.get("/getCampagne", (req, res) => {
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
+  );
+
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  fetch("https://127.0.0.1:3333/api/campaigns/summary", requestOptions)
+    .then((response) => response.text())
+    .then((result) => res.json(JSON.parse(result)))
+    .catch((error) => console.log("error", error));
+});
 
 // Start the server
 const PORT = 3000;
