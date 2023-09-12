@@ -1,7 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
+const User = require("./Models/UserModel");
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-const api_key = 'e55ce3c03356ae8fa25465c07dbce7c4826b0077e95d701701e8166dc192b0b8'
+const api_key =
+  "d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c";
 // Create an instance of the Express application
 const app = express();
 
@@ -30,14 +34,30 @@ app.use(function (req, res, next) {
 });
 app.use(express.json());
 app.use(cors());
+const connectionParams = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+mongoose
+  .connect(
+    "mongodb+srv://freelancer:m5Y0YY2WWXjxM3Mr@cluster0.cspwo.mongodb.net/docorWebsit?retryWrites=true&w=majority",
+    connectionParams
+  )
+  .then(() => {
+    console.log("Connected to database ");
+  })
+  .catch((err) => {
+    console.error(`Error connecting to the database. \n${err}`);
+  });
 
+const connection = mongoose.connection;
+connection.once("open", function () {
+  console.log("MongoDB database connection established successfully");
+});
 // Define a route
 app.get("/getTemplates", (req, res) => {
   var myHeaders = new Headers();
-  myHeaders.append(
-    "Authorization",
-    `Bearer ${api_key}`
-  );
+  myHeaders.append("Authorization", `Bearer ${api_key}`);
 
   var requestOptions = {
     method: "GET",
@@ -53,10 +73,7 @@ app.get("/getTemplates", (req, res) => {
 
 app.get("/getGroups", (req, res) => {
   var myHeaders = new Headers();
-  myHeaders.append(
-    "Authorization",
-    `Bearer ${api_key}`
-  );
+  myHeaders.append("Authorization", `Bearer ${api_key}`);
 
   var requestOptions = {
     method: "GET",
@@ -72,10 +89,7 @@ app.get("/getGroups", (req, res) => {
 
 app.get("/getPages", (req, res) => {
   var myHeaders = new Headers();
-  myHeaders.append(
-    "Authorization",
-    `Bearer ${api_key}`
-  );
+  myHeaders.append("Authorization", `Bearer ${api_key}`);
 
   var requestOptions = {
     method: "GET",
@@ -91,10 +105,7 @@ app.get("/getPages", (req, res) => {
 
 app.get("/getSendingProfiles", (req, res) => {
   var myHeaders = new Headers();
-  myHeaders.append(
-    "Authorization",
-    `Bearer ${api_key}`
-  );
+  myHeaders.append("Authorization", `Bearer ${api_key}`);
 
   var requestOptions = {
     method: "GET",
@@ -114,7 +125,6 @@ app.post("/addCampagne", (req, res) => {
     "Authorization",
     "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
   );
-
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -130,10 +140,7 @@ app.post("/addCampagne", (req, res) => {
 
 app.get("/getCampagne", (req, res) => {
   var myHeaders = new Headers();
-  myHeaders.append(
-    "Authorization",
-    "Bearer d7bc353e9ddc340ca3acbeaf61f89a8344166b25009a065dedf9538459c6656c"
-  );
+  myHeaders.append("Authorization", `Bearer ${api_key}`);
 
   var requestOptions = {
     method: "GET",
@@ -147,6 +154,34 @@ app.get("/getCampagne", (req, res) => {
     .catch((error) => console.log("error", error));
 });
 
+app.post("/register", async (req, res) => {
+  try {
+    const newUser = new User(req.body);
+    console.log(newUser);
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+app.get("/login", async (req, res) => {
+  const { email, password } = req.query;
+  console.log(email, password);
+  try {
+    const user = await User.findOne({ email, password }).exec();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // In a real application, you should not send the password in the response.
+    // Here, we're sending the entire user object for simplicity.
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 // Start the server
 const PORT = 3000;
 app.listen(PORT, () => {
